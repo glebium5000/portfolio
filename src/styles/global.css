@@ -1,0 +1,816 @@
+/* ============================================================
+   CAFÉ GLEB v3 — illustrated rebuild
+   Changes in this file (per the rebuild brief):
+   - Scene is now composed from the illustrated assets in /assets;
+     all CSS-drawn café objects removed.
+   - New palette tokens extracted from the art (maroon, cream,
+     blush, gold) alongside the original wood/night tones.
+   - Custom cursors are the illustrated moon cursors (hotspot at
+     the top-left tip: 5,3).
+   - Window is positioned over the chalkboard rectangle on the
+     left wall so it replaces a wall panel instead of floating.
+   - Panels & cards use frame-alt/frame as border-image so the
+     painted borders wrap any size without distortion. textbox.webp
+     was deliberately NOT used for panels: its fixed 1920×289
+     aspect would need non-uniform scaling, which the brief forbids.
+   - No CSS drop-shadows on illustrated elements (painted shadows
+     already exist); grounding is done by sitting art on the
+     painted counter line instead.
+   ============================================================ */
+
+:root {
+  --maroon: #4a2032;
+  --maroon-deep: #331523;
+  --cream: #f5e6d0;
+  --cream-deep: #e9d5b8;
+  --blush: #e8b4a0;
+  --gold: #c4975a;
+  --gold-bright: #e0b878;
+  --wood: #6a4429;
+  --wood-deep: #4a2e1b;
+  --night: #22303f;
+  --ink: #3a2a1e;
+  --ink-soft: #5c4634;
+  --marmalade: #c65a24;
+
+  --font-display: 'Fraunces', 'Georgia', serif;
+  --font-body: 'Karla', 'Helvetica Neue', sans-serif;
+  --font-hand: 'Caveat', cursive;
+
+  --cursor-default: url('/assets/cursors/cursor-default.png') 5 3, auto;
+  --cursor-hover: url('/assets/cursors/cursor-hover.png') 5 3, pointer;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body, #root { height: 100%; }
+
+body {
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--maroon-deep);
+  overflow: hidden;
+  cursor: var(--cursor-default);
+  -webkit-font-smoothing: antialiased;
+}
+
+button, a, [role='button'], input[type='range'] { cursor: var(--cursor-hover); }
+
+button { font-family: inherit; border: none; background: none; color: inherit; }
+
+:focus-visible {
+  outline: 3px dashed var(--gold);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* preload the hover-state button art so the swap never flickers */
+body::after {
+  content: '';
+  position: absolute;
+  width: 0; height: 0;
+  overflow: hidden;
+  background-image:
+    url('/assets/ui/nav-button-hover.webp'),
+    url('/assets/cursors/cursor-hover.png');
+}
+
+/* ============================================================
+   SCENE SHELL
+   ============================================================ */
+
+.cafe {
+  position: relative;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--maroon-deep);
+  filter: saturate(0.75) brightness(0.55);
+  transition: filter 1.6s ease;
+}
+.cafe.is-open { filter: saturate(1) brightness(1); }
+
+.scene { position: absolute; inset: 0; }
+
+/* the painted interior, slightly oversized so parallax never
+   reveals edges (no non-uniform scaling: cover keeps aspect) */
+.interior-bg {
+  position: absolute;
+  inset: -3%;
+  /* v7: the ACTUAL café art — the zip's filenames were swapped;
+     this is the patched export (character art removed) */
+  background: url('/assets/backgrounds/cafe-main.webp') center / cover no-repeat;
+  filter: blur(3px) brightness(0.95);
+}
+
+/* ============================================================
+   LAMP GLOW — under the painted pendant lamps
+   ============================================================ */
+
+.lamp-spot {
+  position: absolute;
+  top: -6%;
+  width: 24vw;
+  height: 30vh;
+  background: radial-gradient(50% 55% at 50% 30%, rgba(255, 200, 120, 0.20), transparent 75%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  animation: lampFlicker 7s ease-in-out infinite;
+}
+.ls-1 { left: 3%;  animation-delay: 0s; }
+.ls-2 { left: 26%; animation-delay: 2.3s; }
+.ls-3 { left: 79%; animation-delay: 4.1s; }
+@keyframes lampFlicker {
+  0%, 100% { opacity: 1; }
+  41% { opacity: 0.86; }
+  43% { opacity: 1; }
+  72% { opacity: 0.9; }
+  74% { opacity: 1; }
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 100% at 50% 45%, transparent 56%, rgba(26, 10, 18, 0.55) 100%);
+  pointer-events: none;
+}
+
+/* ============================================================
+   MENU BOOKLET — the navigation, resting on the counter
+   ============================================================ */
+
+.counter-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.counter-layer > * { pointer-events: auto; }
+
+.booklet {
+  /* every internal measurement derives from --bw, so text tracks the
+     painted safe zones of the art (blank band between the painted MENU
+     header ~top 23% and the painted bottom rule ~81%) at every size */
+  /* v10: larger, but capped by viewport height so the booklet always
+     keeps ~85px clearance top and bottom regardless of screen */
+  --bw: min(500px, 90vw, calc((100dvh - 170px) / 1.36));
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--bw);
+  height: calc(var(--bw) * 1.36);
+  margin-left: calc(var(--bw) / -2);
+  margin-top: calc(var(--bw) * -0.68);
+  background: url('/assets/ui/menu-booklet-back.webp') center / 100% 100% no-repeat;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: calc(var(--bw) * 0.325) calc(var(--bw) * 0.13) calc(var(--bw) * 0.26);
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--lift, 0px));
+  transition: transform 0.22s ease-out;
+}
+.booklet:hover { --lift: -4px; }
+
+.booklet-head { text-align: center; color: var(--cream); }
+.booklet-est {
+  font-size: calc(var(--bw) * 0.026);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.booklet-title {
+  font-family: var(--font-display);
+  font-variation-settings: 'SOFT' 100, 'opsz' 90;
+  font-weight: 600;
+  font-size: calc(var(--bw) * 0.062);
+  line-height: 1.1;
+  color: var(--cream);
+  margin-top: calc(var(--bw) * 0.006);
+}
+.booklet-tag {
+  font-family: var(--font-hand);
+  font-size: calc(var(--bw) * 0.038);
+  color: var(--blush);
+  margin-top: calc(var(--bw) * 0.002);
+}
+
+.booklet-list {
+  list-style: none;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  margin-top: calc(var(--bw) * 0.02);
+  flex: 1;
+}
+/* reserved landing zone for the hover note below each button */
+.booklet-list li {
+  position: relative;
+  padding-bottom: calc(var(--bw) * 0.028);
+}
+
+.nav-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: calc(var(--bw) * 0.10);
+  background: url('/assets/ui/nav-button-idle.webp') center / 100% 100% no-repeat;
+  color: var(--cream);
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), filter 0.25s;
+}
+.nav-btn:hover,
+.nav-btn:focus-visible,
+.nav-btn.is-active {
+  background-image: url('/assets/ui/nav-button-hover.webp');
+  transform: translateY(-2px) rotate(-0.6deg);
+  filter: brightness(1.08);
+}
+.nb-name {
+  font-family: var(--font-display);
+  font-size: calc(var(--bw) * 0.040);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+/* the note lives fully BELOW the button, inside the li's reserved
+   padding — it can't collide with the button border or the next item */
+.nb-note {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: calc(var(--bw) * 0.004);
+  text-align: center;
+  font-family: var(--font-hand);
+  font-size: calc(var(--bw) * 0.034);
+  color: var(--maroon);
+  opacity: 0;
+  transform: translateY(-3px);
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+}
+.nav-btn:hover .nb-note,
+.nav-btn:focus-visible .nb-note,
+.nav-btn.is-active .nb-note {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.booklet-foot {
+  position: absolute;
+  bottom: calc(var(--bw) * 0.10);
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--bw) * 0.02);
+  font-size: calc(var(--bw) * 0.024);
+  letter-spacing: 0.22em;
+  color: var(--gold);
+}
+.foot-star {
+  width: calc(var(--bw) * 0.03);
+  animation: starTwinkle 2.8s ease-in-out infinite;
+}
+.foot-star.fs-2 { animation-delay: 1.4s; }
+@keyframes starTwinkle {
+  0%, 100% { opacity: 0.55; transform: scale(0.9) rotate(-8deg); }
+  50% { opacity: 1; transform: scale(1.05) rotate(8deg); }
+}
+
+/* ---------- pastries at the booklet's base ---------- */
+/* absolute to .booklet: they overlap the lower corners like plates
+   set down beside the menu; no bob — resting things don't float */
+.snack {
+  position: absolute;
+  pointer-events: none;
+}
+.snack-cake {
+  width: calc(var(--bw) * 0.30);
+  left: calc(var(--bw) * -0.13);
+  bottom: calc(var(--bw) * -0.06);
+  transform: rotate(-7deg);
+}
+.snack-tart {
+  width: calc(var(--bw) * 0.26);
+  right: calc(var(--bw) * -0.115);
+  bottom: calc(var(--bw) * -0.055);
+  transform: rotate(6deg);
+}
+.snack-bun {
+  width: calc(var(--bw) * 0.13);
+  right: calc(var(--bw) * 0.10);
+  bottom: calc(var(--bw) * -0.045);
+  transform: rotate(-4deg);
+}
+
+/* ============================================================
+   CONTENT PANELS — ornate frames over warm cream
+   ============================================================ */
+
+.panel-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 4vh 4vw;
+  background: rgba(26, 10, 18, 0.5);
+  backdrop-filter: blur(3px);
+  animation: scrimIn 0.3s ease both;
+}
+@keyframes scrimIn { from { opacity: 0; } to { opacity: 1; } }
+
+.panel {
+  position: relative;
+  width: min(680px, 94vw);
+  max-height: 84vh;
+  display: flex;
+  flex-direction: column;
+  /* flat #edd9c9 = sampled centre of the frame art, so the card
+     interior and panel are identical by construction */
+  background: #edd9c9;
+  border: 30px solid transparent;
+  border-image: url('/assets/ui/frame-alt.webp') 100 round;
+  animation: pageUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes pageUp {
+  from { opacity: 0; transform: translateY(38px) scale(0.985); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.panel-head {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 6px 12px 10px;
+  border-bottom: 2px solid rgba(74, 32, 50, 0.22);
+}
+.panel-head h2 {
+  font-family: var(--font-display);
+  font-variation-settings: 'SOFT' 100;
+  font-weight: 600;
+  font-size: clamp(24px, 3vw, 32px);
+  color: var(--maroon);
+}
+.panel-stamp {
+  font-family: var(--font-hand);
+  font-size: 19px;
+  color: var(--gold);
+  border: 2px solid rgba(196, 151, 90, 0.55);
+  border-radius: 999px;
+  padding: 0 12px;
+  transform: rotate(-3deg);
+}
+.panel-close {
+  margin-left: auto;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  font-size: 25px;
+  line-height: 1;
+  color: var(--maroon);
+  border: 2px solid rgba(74, 32, 50, 0.4);
+  border-radius: 50%;
+  transition: transform 0.25s, color 0.25s, border-color 0.25s, background 0.25s;
+}
+.panel-close:hover {
+  transform: rotate(90deg);
+  color: var(--cream);
+  background: var(--maroon);
+  border-color: var(--maroon);
+}
+
+.panel-body {
+  padding: 12px 12px 6px;
+  overflow-y: auto;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  font-size: 16px;
+}
+.panel-body::-webkit-scrollbar { width: 10px; }
+.panel-body::-webkit-scrollbar-thumb {
+  background: rgba(74, 32, 50, 0.35);
+  border-radius: 5px;
+}
+
+.hand-lead {
+  font-family: var(--font-hand);
+  font-size: 30px;
+  color: var(--maroon);
+  margin-bottom: 8px;
+}
+.about-tags {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0 10px;
+}
+.about-tags li {
+  padding: 3px 13px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(196, 151, 90, 0.6);
+  background: rgba(196, 151, 90, 0.12);
+  color: #8a6430;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+}
+.margin-note {
+  font-family: var(--font-hand);
+  font-size: 20px;
+  color: var(--gold);
+  transform: rotate(-1.2deg);
+  margin-top: 10px;
+}
+
+/* projects in the smaller ornate frame */
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+  padding-top: 4px;
+}
+.project-card {
+  background: transparent;
+  border: 20px solid transparent;
+  border-image: url('/assets/ui/frame.webp') 74 fill round;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.project-card:hover { transform: translateY(-4px); }
+.project-card h3 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--maroon);
+  margin: 0 0 4px;
+}
+.project-card p { font-size: 13.5px; }
+.pc-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 9px 0;
+}
+.pc-tags span {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: rgba(74, 32, 50, 0.1);
+  color: var(--maroon);
+}
+.pc-link {
+  font-family: var(--font-hand);
+  font-size: 19px;
+  color: var(--gold);
+  text-decoration: none;
+}
+.pc-link:hover { text-decoration: underline wavy; }
+
+/* contact */
+.contact-list { max-width: 420px; margin: 0 auto; }
+.contact-line {
+  display: grid;
+  grid-template-columns: 30px 88px 1fr;
+  align-items: baseline;
+  gap: 10px;
+  padding: 13px 6px;
+  border-bottom: 1.5px dashed rgba(74, 32, 50, 0.3);
+  text-decoration: none;
+  color: var(--ink-soft);
+  transition: background 0.25s, transform 0.25s;
+}
+.contact-line:hover {
+  background: rgba(196, 151, 90, 0.1);
+  transform: translateX(4px);
+}
+.cl-icon { color: var(--gold); font-size: 18px; }
+.cl-label { font-weight: 700; color: var(--maroon); }
+.cl-value { color: var(--ink-soft); }
+.contact-line:hover .cl-value { color: var(--maroon); }
+.contact-foot {
+  padding-top: 16px;
+  text-align: center;
+  font-family: var(--font-hand);
+  font-size: 18px;
+  color: var(--gold);
+}
+
+/* blog */
+.blog-list { display: flex; flex-direction: column; }
+.blog-entry {
+  display: grid;
+  grid-template-columns: 110px 1fr auto;
+  align-items: baseline;
+  gap: 14px;
+  padding: 15px 4px;
+  border-bottom: 1.5px dashed rgba(74, 32, 50, 0.28);
+  text-decoration: none;
+  transition: background 0.25s, transform 0.25s;
+}
+.blog-entry:hover {
+  background: rgba(196, 151, 90, 0.1);
+  transform: translateX(4px);
+}
+.be-date { font-family: var(--font-hand); font-size: 18px; color: var(--ink-soft); }
+.be-title { font-family: var(--font-display); font-size: 19px; color: var(--maroon); }
+.blog-entry:hover .be-title { color: #6d3049; }
+.be-mins { font-size: 12.5px; color: var(--ink-soft); white-space: nowrap; }
+
+
+/* ---- Single project card layout ---- */
+.project-grid--single {
+  display: flex;
+  justify-content: center;
+}
+.project-grid--single .project-card {
+  max-width: 460px;
+  width: 100%;
+}
+
+.pc-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pc-badge {
+  display: inline-block;
+  font-family: var(--font-hand);
+  font-size: 14px;
+  color: var(--marmalade);
+  background: rgba(198, 90, 36, 0.08);
+  border: 1.5px solid rgba(198, 90, 36, 0.25);
+  border-radius: 999px;
+  padding: 2px 12px;
+}
+
+/* ---- Blog empty state ---- */
+.blog-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 180px;
+  text-align: center;
+  gap: 10px;
+}
+
+.blog-closed-sign {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 4vw, 34px);
+  color: var(--ink);
+  letter-spacing: 0.04em;
+}
+
+.blog-closed-note {
+  font-family: var(--font-hand);
+  font-size: 20px;
+  color: var(--marmalade);
+  opacity: 0.8;
+}
+
+/* ---- art credit ---- */
+.art-credit {
+  position: fixed;
+  left: 14px;
+  bottom: 12px;
+  z-index: 30;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: rgba(245, 230, 208, 0.85);
+  text-shadow: 0 1px 3px rgba(26, 10, 18, 0.7);
+  pointer-events: none;
+}
+
+/* ============================================================
+   MUSIC TOGGLE + VOLUME
+   ============================================================ */
+
+.radio-dock {
+  position: fixed;
+  right: 22px;
+  bottom: 20px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.music-btn {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 38% 32%, #63304a, var(--maroon) 60%, var(--maroon-deep));
+  border: 2.5px solid var(--gold);
+  box-shadow: 0 8px 20px rgba(20, 8, 14, 0.55), inset 0 1px 0 rgba(245, 230, 208, 0.25);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), filter 0.25s;
+}
+.music-btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+.music-icon { width: 26px; height: 26px; }
+.music-btn.is-playing .music-icon { animation: noteSway 2.2s ease-in-out infinite; }
+.music-btn.is-muted { filter: saturate(0.6) brightness(0.85); }
+.music-btn.is-muted .music-icon { opacity: 0.6; }
+@keyframes noteSway {
+  0%, 100% { transform: rotate(-7deg); }
+  50% { transform: rotate(7deg); }
+}
+
+.volume-row {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: linear-gradient(#5c2a41, var(--maroon-deep));
+  border: 2px solid rgba(196, 151, 90, 0.55);
+  box-shadow: 0 6px 16px rgba(20, 8, 14, 0.45);
+  animation: volumeIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes volumeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.volume-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 108px;
+  height: 22px;
+  background: transparent;
+  touch-action: none;
+}
+.volume-slider::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(26, 10, 18, 0.8);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.6), 0 1px 0 rgba(245, 230, 208, 0.12);
+}
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  margin-top: -5px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--cream), var(--gold));
+  border: 2px solid var(--maroon-deep);
+  box-shadow: 0 0 8px rgba(224, 184, 120, 0.55);
+}
+.volume-slider::-moz-range-track {
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(26, 10, 18, 0.8);
+}
+.volume-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--cream), var(--gold));
+  border: 2px solid var(--maroon-deep);
+}
+.volume-slider::-moz-range-progress {
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, rgba(196, 151, 90, 0.55), var(--gold-bright));
+}
+.volume-slider:focus-visible { outline: 3px dashed var(--gold); outline-offset: 3px; }
+
+/* ============================================================
+   MUSIC INVITE — a handwritten note left on the counter
+   (v4: replaces the entry overlay; torn-paper look via clip-path)
+   ============================================================ */
+
+.invite {
+  position: fixed;
+  left: 50%;
+  bottom: 26px;
+  margin-left: calc(min(280px, 74vw) / -2);
+  text-align: center;
+  z-index: 60;
+  width: min(280px, 74vw);
+  padding: 20px 22px 18px;
+  background:
+    linear-gradient(rgba(74, 32, 50, 0.05) 1px, transparent 1px) 0 8px / 100% 26px,
+    linear-gradient(168deg, #f9edd8, var(--cream-deep));
+  clip-path: polygon(
+    1.5% 4%, 12% 1%, 26% 3.5%, 41% 0.5%, 57% 3%, 72% 0.8%, 87% 3.2%, 98.5% 1.2%,
+    99.5% 22%, 98% 44%, 99.6% 66%, 98.2% 86%, 99% 97%,
+    86% 99.5%, 70% 97.5%, 53% 99.8%, 36% 97.6%, 19% 99.6%, 4% 98%,
+    0.6% 78%, 2% 55%, 0.4% 32%, 1.8% 12%
+  );
+  transform: rotate(-2.5deg);
+  animation: inviteIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes inviteIn {
+  from { opacity: 0; transform: rotate(-2.5deg) translateY(26px); }
+  to   { opacity: 1; transform: rotate(-2.5deg) translateY(0); }
+}
+
+.invite-text {
+  font-family: var(--font-hand);
+  font-size: 22px;
+  line-height: 1.25;
+  color: var(--maroon);
+  padding: 0 18px;
+}
+
+.invite-yes {
+  display: block;
+  margin: 12px auto 0;
+  width: 152px;
+  height: 42px;
+  background: url('/assets/ui/nav-button-idle.webp') center / 100% 100% no-repeat;
+  font-family: var(--font-hand);
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--cream);
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), filter 0.25s;
+}
+.invite-yes:hover,
+.invite-yes:focus-visible {
+  background-image: url('/assets/ui/nav-button-hover.webp');
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+.invite-close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  line-height: 1;
+  color: rgba(74, 32, 50, 0.65);
+  border-radius: 50%;
+  transition: color 0.25s, background 0.25s, transform 0.25s;
+}
+.invite-close:hover {
+  color: var(--cream);
+  background: var(--maroon);
+  transform: rotate(90deg);
+}
+
+/* on shorter viewports the centred invite would sit on the booklet's
+   lower edge — move it above the music dock instead (it's inviting you
+   to use that control anyway) */
+@media (max-height: 860px) {
+  .invite {
+    left: auto;
+    right: 20px;
+    bottom: 104px;
+    margin-left: 0;
+    transform: rotate(2deg);
+  }
+  @keyframes inviteIn {
+    from { opacity: 0; transform: rotate(2deg) translateY(26px); }
+    to   { opacity: 1; transform: rotate(2deg) translateY(0); }
+  }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 720px) {
+  /* background crops in tighter; booklet becomes the hero */
+  .interior-bg { background-position: 42% bottom; }
+
+  .lamp-spot { width: 44vw; }
+  .ls-3 { display: none; }
+
+  .panel { border-width: 22px; }
+  .blog-entry { grid-template-columns: 1fr auto; }
+  .be-date { grid-column: 1 / -1; }
+  .contact-line { grid-template-columns: 26px 1fr; }
+  .cl-value { grid-column: 2; }
+
+  .invite { bottom: 12px; width: min(250px, 78vw); margin-left: calc(min(250px, 78vw) / -2); padding: 16px 18px 15px; }
+  .invite-text { font-size: 20px; }
+
+  .radio-dock { right: 14px; bottom: 14px; }
+  .music-btn { width: 48px; height: 48px; }
+  .volume-slider { width: 92px; }
+}
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.15s !important;
+  }
+  .cafe { transition: none; }
+}
