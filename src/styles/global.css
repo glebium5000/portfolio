@@ -169,12 +169,12 @@ body::after {
 }
 .booklet:hover { --lift: -4px; }
 
-.booklet-head { text-align: center; color: var(--cream); }
+.booklet-head { text-align: center; }
 .booklet-est {
   font-size: calc(var(--bw) * 0.026);
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: #8a6430;
 }
 .booklet-title {
   font-family: var(--font-display);
@@ -182,13 +182,13 @@ body::after {
   font-weight: 600;
   font-size: calc(var(--bw) * 0.062);
   line-height: 1.1;
-  color: var(--cream);
+  color: var(--maroon);
   margin-top: calc(var(--bw) * 0.006);
 }
 .booklet-tag {
   font-family: var(--font-hand);
   font-size: calc(var(--bw) * 0.038);
-  color: var(--blush);
+  color: #9c5570;
   margin-top: calc(var(--bw) * 0.002);
 }
 

@@ -24,6 +24,37 @@ export default function App() {
   const audioRef = useRef(null)
   const volumeRef = useRef(0.09)
   const fadeRef = useRef(null)
+  const audioCtxRef = useRef(null)
+  const gainRef = useRef(null)
+
+  // iOS ignores audio.volume (it's hardware-button only), so we route
+  // playback through a Web Audio gain node, which iOS does respect.
+  // Built lazily inside the first user gesture, as required by browsers.
+  const ensureAudioGraph = useCallback(() => {
+    if (gainRef.current) return
+    const AC = window.AudioContext || window.webkitAudioContext
+    const a = audioRef.current
+    if (!AC || !a) return
+    try {
+      const ctx = new AC()
+      const src = ctx.createMediaElementSource(a)
+      const gain = ctx.createGain()
+      gain.gain.value = 0
+      src.connect(gain)
+      gain.connect(ctx.destination)
+      a.volume = 1 // element outputs full signal; the gain node does the mixing
+      audioCtxRef.current = ctx
+      gainRef.current = gain
+    } catch {
+      /* graph unavailable — applyVolume falls back to element volume */
+    }
+  }, [])
+
+  // one place that sets loudness, whichever mechanism is available
+  const applyVolume = useCallback((v) => {
+    if (gainRef.current) gainRef.current.gain.value = v
+    else if (audioRef.current) audioRef.current.volume = v
+  }, [])
 
   // Lights come up on mount; the invite note appears shortly after
   useEffect(() => {
@@ -37,7 +68,9 @@ export default function App() {
   const startAudio = useCallback(() => {
     const a = audioRef.current
     if (!a) return
-    a.volume = 0
+    ensureAudioGraph()
+    audioCtxRef.current?.resume()
+    applyVolume(0)
     a.play()
       .then(() => {
         setPlaying(true)
@@ -45,7 +78,7 @@ export default function App() {
         fadeRef.current = setInterval(() => {
           const target = volumeRef.current
           v = Math.min(target, v + Math.max(0.008, target / 16))
-          a.volume = v
+          applyVolume(v)
           if (v >= target) {
             clearInterval(fadeRef.current)
             fadeRef.current = null
@@ -53,7 +86,7 @@ export default function App() {
         }, 90)
       })
       .catch(() => setPlaying(false))
-  }, [])
+  }, [ensureAudioGraph, applyVolume])
 
   const acceptMusic = useCallback(() => {
     setInvite('gone')
@@ -71,18 +104,19 @@ export default function App() {
       setPlaying(false)
     } else {
       setInvite('gone') // using the toggle answers the invite either way
-      a.volume = volumeRef.current
+      ensureAudioGraph()
+      audioCtxRef.current?.resume()
+      applyVolume(volumeRef.current)
       a.play().then(() => setPlaying(true)).catch(() => {})
     }
-  }, [playing])
+  }, [playing, ensureAudioGraph, applyVolume])
 
   const changeVolume = useCallback((v) => {
     volumeRef.current = v
     setVolume(v)
     if (fadeRef.current) { clearInterval(fadeRef.current); fadeRef.current = null }
-    const a = audioRef.current
-    if (a) a.volume = v
-  }, [])
+    applyVolume(v)
+  }, [applyVolume])
 
   useEffect(() => {
     const onKey = (e) => {
