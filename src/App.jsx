@@ -128,7 +128,7 @@ export default function App() {
 
   return (
     <div className={`cafe ${open ? 'is-open' : ''}`}>
-      <audio ref={audioRef} src="/bgm.mp3" loop preload="auto" />
+      <audio ref={audioRef} src="/bgm.mp3" loop preload="none" />
 
       <CafeScene />
       <MenuBooklet onOrder={setActivePanel} activePanel={activePanel} />

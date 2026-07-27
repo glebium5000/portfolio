@@ -32,7 +32,7 @@ const CONTENT = {
     title: 'Projects',
     stamp: 'baked fresh',
     body: (
-      <div className="project-grid project-grid--single">
+      <div className="project-grid">
         <article className="project-card">
           <div className="pc-header">
             <h3>Chainward</h3>
@@ -47,6 +47,22 @@ const CONTENT = {
             <span>Python</span><span>FastAPI</span><span>Ethereum</span>
           </div>
           <a className="pc-link" href="#" onClick={(e) => e.preventDefault()}>view project ↗</a>
+        </article>
+
+        <article className="project-card">
+          <div className="pc-header">
+            <h3>Pomodoro</h3>
+            <span className="pc-badge">made with ♥</span>
+          </div>
+          <p>
+            A study timer built for my favourite mechanical engineering student.
+            Focus and break sessions, a session log, and its own lo-fi music dock —
+            commissioned by the client over dinner.
+          </p>
+          <div className="pc-tags">
+            <span>React</span><span>Vite</span>
+          </div>
+          <a className="pc-link" href="https://pomodoro.glebium.me" target="_blank" rel="noreferrer">open the timer ↗</a>
         </article>
       </div>
     ),
