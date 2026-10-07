@@ -16,9 +16,15 @@ const CONTENT = {
       <>
         <p className="hand-lead">Hey, I'm Gleb ☾</p>
         <p>
-          By day I work in fintech — compliance and business development.
-          By night: building questionably working web apps, keeping plants
-          alive, lifting weights, and playing TCGs. Based in London.
+          By day I work in fintech, in compliance and business development.
+          By night I build things under my own small studio, Glebium Labs Ltd.
+          Right now that's{' '}
+          <a className="inline-link" href="https://slabtcg.app" target="_blank" rel="noopener">Slab TCG</a>,
+          a collection app for trading card collectors, and{' '}
+          <a className="inline-link" href="https://chainwarden.glebium.me" target="_blank" rel="noopener">Chainwarden</a>,
+          an AML risk screening tool for crypto wallets that's free to use while
+          it's in development. Outside of that: keeping plants alive, lifting
+          weights and playing TCGs. Based in London.
         </p>
         <p>Sometimes those apps are for other people —</p>
         <ul className="about-tags">
@@ -35,34 +41,36 @@ const CONTENT = {
       <div className="project-grid">
         <article className="project-card">
           <div className="pc-header">
-            <h3>Chainward</h3>
-            <span className="pc-badge">work in progress</span>
+            <h3>Slab TCG</h3>
+            <span className="pc-badge">coming soon</span>
+          </div>
+          <p>
+            A collection app for trading card collectors, covering Pokémon, Magic:
+            The Gathering, Yu-Gi-Oh!, Riftbound, One Piece and Lorcana. Finish sets,
+            log your pulls and trade with friends. Beta coming soon on iPhone and
+            Android.
+          </p>
+          <div className="pc-tags">
+            <span>iOS</span><span>Android</span>
+          </div>
+          <a className="pc-link" href="https://slabtcg.app" target="_blank" rel="noopener">visit the site ↗</a>
+        </article>
+
+        <article className="project-card">
+          <div className="pc-header">
+            <h3>Chainwarden</h3>
+            <span className="pc-badge">open &amp; free</span>
           </div>
           <p>
             An AML risk screening tool for crypto wallets. Trace transaction flows,
             score wallet risk with fully explainable math, and dig into exchange
             intelligence — not quite Elliptic but getting there slowly =D
+            It's open and free to use while it's in development.
           </p>
           <div className="pc-tags">
             <span>Python</span><span>FastAPI</span><span>Ethereum</span>
           </div>
-          <a className="pc-link" href="#" onClick={(e) => e.preventDefault()}>view project ↗</a>
-        </article>
-
-        <article className="project-card">
-          <div className="pc-header">
-            <h3>Pomodoro</h3>
-            <span className="pc-badge">made with ♥</span>
-          </div>
-          <p>
-            A study timer built for my favourite mechanical engineering student.
-            Focus and break sessions, a session log, and its own lo-fi music dock —
-            commissioned by the client over dinner.
-          </p>
-          <div className="pc-tags">
-            <span>React</span><span>Vite</span>
-          </div>
-          <a className="pc-link" href="https://pomodoro.glebium.me" target="_blank" rel="noreferrer">open the timer ↗</a>
+          <a className="pc-link" href="https://chainwarden.glebium.me" target="_blank" rel="noopener">view project ↗</a>
         </article>
       </div>
     ),
@@ -72,9 +80,9 @@ const CONTENT = {
     stamp: 'Open 24/7!',
     body: (
       <div className="contact-list">
-        <a className="contact-line" href="mailto:19gleb99@gmail.com">
+        <a className="contact-line" href="mailto:gleb@glebium.me">
           <span className="cl-icon">✉</span><span className="cl-label">Email</span>
-          <span className="cl-value">19gleb99@gmail.com</span>
+          <span className="cl-value">gleb@glebium.me</span>
         </a>
         <a className="contact-line" href="https://github.com/glebium5000" target="_blank" rel="noreferrer">
           <span className="cl-icon">☾</span><span className="cl-label">GitHub</span>

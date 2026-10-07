@@ -69,10 +69,16 @@ export default function MenuBooklet({ onOrder, activePanel }) {
             </li>
           ))}
         </ul>
-        <footer className="booklet-foot" aria-hidden="true">
-          <img className="foot-star" src="/assets/decorative/star.png" alt="" />
-          <span>☾ open late ☽</span>
-          <img className="foot-star fs-2" src="/assets/decorative/star.png" alt="" />
+        <footer className="booklet-foot">
+          <div className="foot-row" aria-hidden="true">
+            <img className="foot-star" src="/assets/decorative/star.png" alt="" />
+            <span>☾ open late ☽</span>
+            <img className="foot-star fs-2" src="/assets/decorative/star.png" alt="" />
+          </div>
+          <p className="booklet-legal">
+            Glebium Labs Ltd. Registered in England and Wales, company number
+            17501252. Registered office: Admiral Walk, London, W9 3TW, United Kingdom.
+          </p>
         </footer>
 
         {/* pastries resting at the booklet's base — inside the nav so

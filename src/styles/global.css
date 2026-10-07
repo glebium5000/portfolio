@@ -255,11 +255,20 @@ body::after {
   transform: translateY(0);
 }
 
+/* footer stack lives in the cream band between the painted bottom rule
+   (~0.25bw above the booklet's base) and the frame (~0.085bw) — it never
+   reaches into the button list, whose padding-bottom is 0.26bw */
 .booklet-foot {
   position: absolute;
-  bottom: calc(var(--bw) * 0.10);
-  left: 0;
-  right: 0;
+  bottom: calc(var(--bw) * 0.088);
+  left: calc(var(--bw) * 0.11);
+  right: calc(var(--bw) * 0.11);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--bw) * 0.012);
+}
+.foot-row {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -267,6 +276,17 @@ body::after {
   font-size: calc(var(--bw) * 0.024);
   letter-spacing: 0.22em;
   color: var(--gold);
+}
+/* company details: the smallest, quietest text on the page — floored at
+   8.5px so it stays legible when the booklet shrinks on small phones */
+.booklet-legal {
+  font-family: var(--font-body);
+  font-size: max(8.5px, calc(var(--bw) * 0.0185));
+  line-height: 1.3;
+  text-align: center;
+  color: var(--ink-soft);
+  opacity: 0.72;
+  text-wrap: balance;
 }
 .foot-star {
   width: calc(var(--bw) * 0.03);
@@ -418,6 +438,24 @@ body::after {
   font-size: 13px;
   letter-spacing: 0.04em;
 }
+/* inline links in panel prose: the site's gold link colour, deepened to
+   the tag gold (#8a6430) for the text so it stays readable on cream */
+.inline-link {
+  color: #8a6430;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+  transition: color 0.2s, text-decoration-color 0.2s;
+}
+.inline-link:hover,
+.inline-link:focus-visible {
+  color: var(--maroon);
+  text-decoration-color: var(--maroon);
+  text-decoration-style: wavy;
+}
+
 .margin-note {
   font-family: var(--font-hand);
   font-size: 20px;
@@ -762,8 +800,9 @@ body::after {
 
 /* on shorter viewports the centred invite would sit on the booklet's
    lower edge — move it above the music dock instead (it's inviting you
-   to use that control anyway) */
-@media (max-height: 860px) and (min-width: 721px) {
+   to use that control anyway). 980px: below that the note would cover
+   the booklet footer (open late + company details) */
+@media (max-height: 980px) and (min-width: 721px) {
   .invite {
     left: auto;
     right: 20px;
