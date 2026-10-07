@@ -15,17 +15,23 @@ const CONTENT = {
     body: (
       <>
         <p className="hand-lead">Hey, I'm Gleb ☾</p>
-        <p>
-          By day I work in fintech, in compliance and business development.
-          By night I build things under my own small studio, Glebium Labs Ltd.
-          Right now that's{' '}
-          <a className="inline-link" href="https://slabtcg.app" target="_blank" rel="noopener">Slab TCG</a>,
-          a collection app for trading card collectors, and{' '}
-          <a className="inline-link" href="https://chainwarden.glebium.me" target="_blank" rel="noopener">Chainwarden</a>,
-          an AML risk screening tool for crypto wallets that's free to use while
-          it's in development. Outside of that: keeping plants alive, lifting
-          weights and playing TCGs. Based in London.
-        </p>
+        <div className="about-prose">
+          <p>By day I work in fintech, in compliance and business development.</p>
+          <p>
+            By night I build things under my own small solo dev studio, Glebium
+            Labs Ltd. Right now I am building{' '}
+            <a className="inline-link" href="https://slabtcg.app" target="_blank" rel="noopener">Slab TCG</a>,
+            a collection app for trading card collectors, and{' '}
+            <a className="inline-link" href="https://chainwarden.glebium.me" target="_blank" rel="noopener">Chainwarden</a>,
+            an AML risk screening tool for crypto wallets that's free to use
+            while it's in development.
+          </p>
+          <p>
+            Outside of that: keeping plants alive, lifting weights and playing TCGs.
+            <br />
+            Based in London.
+          </p>
+        </div>
         <p>Sometimes those apps are for other people —</p>
         <ul className="about-tags">
           <li>React</li><li>Three.js</li><li>Blender</li><li>TypeScript</li><li>Python</li>
@@ -64,8 +70,7 @@ const CONTENT = {
           <p>
             An AML risk screening tool for crypto wallets. Trace transaction flows,
             score wallet risk with fully explainable math, and dig into exchange
-            intelligence — not quite Elliptic but getting there slowly =D
-            It's open and free to use while it's in development.
+            intelligence. It's open and free to use while it's in development.
           </p>
           <div className="pc-tags">
             <span>Python</span><span>FastAPI</span><span>Ethereum</span>

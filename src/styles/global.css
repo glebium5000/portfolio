@@ -438,6 +438,10 @@ body::after {
   font-size: 13px;
   letter-spacing: 0.04em;
 }
+/* About Me prose: paragraphs need visible breathing room */
+.about-prose p + p { margin-top: 0.75em; }
+.about-prose { margin-bottom: 0.75em; }
+
 /* inline links in panel prose: the site's gold link colour, deepened to
    the tag gold (#8a6430) for the text so it stays readable on cream */
 .inline-link {
