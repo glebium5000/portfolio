@@ -3,12 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Gleb R. — fintech compliance &amp; hobby developer</title>
-    <meta name="description" content="Portfolio of Gleb R., based in London. Pull up a chair." />
+    <title>Glebium Labs Ltd — independent product studio, London</title>
+    <meta name="description" content="Glebium Labs Ltd: independent product studio building Slab TCG and Chainwarden. Founded by Gleb Romanov, London." />
 
     <!-- link previews (Discord, LinkedIn, iMessage, etc.) -->
-    <meta property="og:title" content="Gleb R. — fintech compliance & hobby developer" />
-    <meta property="og:description" content="Portfolio of Gleb R., based in London. Pull up a chair." />
+    <meta property="og:title" content="Glebium Labs Ltd — independent product studio, London" />
+    <meta property="og:description" content="Glebium Labs Ltd: independent product studio building Slab TCG and Chainwarden. Founded by Gleb Romanov, London." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://www.glebium.me/" />
     <meta property="og:site_name" content="glebium.me" />
@@ -21,10 +21,56 @@
       href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,400..700,100&family=Karla:wght@400;500;700&family=Caveat:wght@500;700&display=swap"
       rel="stylesheet"
     />
+    <!-- company details for search engines and automated checks -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Glebium Labs",
+        "legalName": "Glebium Labs Ltd",
+        "url": "https://www.glebium.me/",
+        "email": "gleb@glebium.me",
+        "description": "Independent product studio building Slab TCG and Chainwarden.",
+        "identifier": {
+          "@type": "PropertyValue",
+          "propertyID": "Companies House company number (England and Wales)",
+          "value": "17501252"
+        },
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Admiral Walk",
+          "addressLocality": "London",
+          "postalCode": "W9 3TW",
+          "addressCountry": "GB"
+        },
+        "founder": { "@type": "Person", "name": "Gleb Romanov" },
+        "sameAs": ["https://github.com/glebium5000"],
+        "owns": [
+          { "@type": "SoftwareApplication", "name": "Slab TCG", "url": "https://slabtcg.app" },
+          { "@type": "SoftwareApplication", "name": "Chainwarden", "url": "https://chainwarden.glebium.me" }
+        ]
+      }
+    </script>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='24' font-size='24'%3E%E2%98%95%3C/text%3E%3C/svg%3E" />
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- plain-HTML fallback: what crawlers and no-JS visitors see.
+           React replaces this when the café loads; the same details are
+           shown on the menu booklet's footer. -->
+      <main style="max-width: 640px; margin: 48px auto; padding: 32px 28px; background: #f5e6d0; border-radius: 6px; font-family: Georgia, serif; color: #3a2a1e; line-height: 1.6;">
+        <h1 style="font-size: 28px; margin: 0 0 8px;">Glebium Labs Ltd</h1>
+        <p>Independent product studio building
+          <a href="https://slabtcg.app" style="color: #6d3049;">Slab TCG</a>, a collection app for trading card collectors, and
+          <a href="https://chainwarden.glebium.me" style="color: #6d3049;">Chainwarden</a>, an open and free AML risk screening tool for crypto wallets.
+          Founded by Gleb Romanov, London.</p>
+        <footer style="margin-top: 24px; font-size: 14px; color: #5c4634;">
+          <p>Glebium Labs Ltd. Registered in England and Wales, company number 17501252.
+            Registered office: Admiral Walk, London, W9 3TW, United Kingdom.</p>
+          <p>Contact: <a href="mailto:gleb@glebium.me" style="color: #6d3049;">gleb@glebium.me</a></p>
+        </footer>
+      </main>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

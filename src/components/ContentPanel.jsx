@@ -23,8 +23,8 @@ const CONTENT = {
             <a className="inline-link" href="https://slabtcg.app" target="_blank" rel="noopener">Slab TCG</a>,
             a collection app for trading card collectors, and{' '}
             <a className="inline-link" href="https://chainwarden.glebium.me" target="_blank" rel="noopener">Chainwarden</a>,
-            an AML risk screening tool for crypto wallets that's free to use
-            while it's in development.
+            an AML risk screening tool for crypto wallets that's open and free
+            to use.
           </p>
           <p>
             Outside of that: keeping plants alive, lifting weights and playing TCGs.
@@ -32,7 +32,6 @@ const CONTENT = {
             Based in London.
           </p>
         </div>
-        <p>Sometimes those apps are for other people —</p>
         <ul className="about-tags">
           <li>React</li><li>Three.js</li><li>Blender</li><li>TypeScript</li><li>Python</li>
         </ul>
@@ -57,7 +56,7 @@ const CONTENT = {
             Android.
           </p>
           <div className="pc-tags">
-            <span>iOS</span><span>Android</span>
+            <span>iOS</span><span>Android</span><span>Claude API</span>
           </div>
           <a className="pc-link" href="https://slabtcg.app" target="_blank" rel="noopener">visit the site ↗</a>
         </article>
@@ -70,10 +69,10 @@ const CONTENT = {
           <p>
             An AML risk screening tool for crypto wallets. Trace transaction flows,
             score wallet risk with fully explainable math, and dig into exchange
-            intelligence. It's open and free to use while it's in development.
+            intelligence. It's open and free to use.
           </p>
           <div className="pc-tags">
-            <span>Python</span><span>FastAPI</span><span>Ethereum</span>
+            <span>Python</span><span>FastAPI</span><span>Ethereum</span><span>Claude API</span>
           </div>
           <a className="pc-link" href="https://chainwarden.glebium.me" target="_blank" rel="noopener">view project ↗</a>
         </article>
