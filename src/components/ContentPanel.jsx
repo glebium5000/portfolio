@@ -35,7 +35,6 @@ const CONTENT = {
         <ul className="about-tags">
           <li>React</li><li>Three.js</li><li>Blender</li><li>TypeScript</li><li>Python</li>
         </ul>
-        <p className="margin-note">— currently accepting freelance orders</p>
       </>
     ),
   },
@@ -56,7 +55,7 @@ const CONTENT = {
             Android.
           </p>
           <div className="pc-tags">
-            <span>iOS</span><span>Android</span><span>Claude API</span>
+            <span>iOS</span><span>Android</span>
           </div>
           <a className="pc-link" href="https://slabtcg.app" target="_blank" rel="noopener">visit the site ↗</a>
         </article>
@@ -72,7 +71,7 @@ const CONTENT = {
             intelligence. It's open and free to use.
           </p>
           <div className="pc-tags">
-            <span>Python</span><span>FastAPI</span><span>Ethereum</span><span>Claude API</span>
+            <span>Python</span><span>FastAPI</span><span>Ethereum</span>
           </div>
           <a className="pc-link" href="https://chainwarden.glebium.me" target="_blank" rel="noopener">view project ↗</a>
         </article>

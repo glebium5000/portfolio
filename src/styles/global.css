@@ -255,18 +255,21 @@ body::after {
   transform: translateY(0);
 }
 
-/* footer stack lives in the cream band between the painted bottom rule
-   (~0.25bw above the booklet's base) and the frame (~0.085bw) — it never
-   reaches into the button list, whose padding-bottom is 0.26bw */
+/* footer stack is centred in the empty cream band of the art: measured
+   from menu-booklet-back, the painted bottom rule ends at 1.118bw and the
+   frame's inner edge starts at 1.2745bw, so the band's centre is 1.196bw.
+   Centring (rather than bottom-anchoring) keeps it balanced whether the
+   company line wraps to two lines (desktop) or three (phones). */
 .booklet-foot {
   position: absolute;
-  bottom: calc(var(--bw) * 0.088);
+  top: calc(var(--bw) * 1.196);
+  transform: translateY(-50%);
   left: calc(var(--bw) * 0.11);
   right: calc(var(--bw) * 0.11);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: calc(var(--bw) * 0.012);
+  gap: calc(var(--bw) * 0.014);
 }
 .foot-row {
   display: flex;
@@ -308,7 +311,8 @@ body::after {
 .snack-cake {
   width: calc(var(--bw) * 0.30);
   left: calc(var(--bw) * -0.13);
-  bottom: calc(var(--bw) * -0.06);
+  /* sits a touch low so its corner stays clear of the company line */
+  bottom: calc(var(--bw) * -0.08);
   transform: rotate(-7deg);
 }
 .snack-tart {
@@ -460,13 +464,6 @@ body::after {
   text-decoration-style: wavy;
 }
 
-.margin-note {
-  font-family: var(--font-hand);
-  font-size: 20px;
-  color: var(--gold);
-  transform: rotate(-1.2deg);
-  margin-top: 10px;
-}
 
 /* projects in the smaller ornate frame */
 .project-grid {
@@ -839,8 +836,18 @@ body::after {
 
   /* extra bottom clearance on phones so the invite bar fits below */
   .booklet { --bw: min(500px, 88vw, max(260px, calc((100dvh - 250px) / 1.36))); }
+  /* phones: the company line wraps to three lines, so tighten the stack
+     to keep clear space above and below it inside the band */
+  .booklet-foot {
+    gap: calc(var(--bw) * 0.008);
+    /* narrower column keeps the wrapped lines inside the corner pastries */
+    left: calc(var(--bw) * 0.15);
+    right: calc(var(--bw) * 0.15);
+  }
+  .booklet-legal { line-height: 1.17; }
+
   /* pull the overhanging pastries in so they don't clip offscreen */
-  .snack-cake { left: calc(var(--bw) * -0.055); }
+  .snack-cake { left: calc(var(--bw) * -0.055); bottom: calc(var(--bw) * -0.125); }
   .snack-tart { right: calc(var(--bw) * -0.05); }
 
   /* credit moves top-left, out of everyone's way */
